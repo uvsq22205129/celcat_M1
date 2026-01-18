@@ -68,4 +68,21 @@ public class Cours {
                 ", group='" + group + '\'' +
                 '}';    
     }
+
+    public boolean hasModule(String ueCode) {
+        return title != null && title.contains(ueCode);
+    }
+
+    public boolean isCM() {
+        return type != null && type.contains("CM");
+    }
+
+    public boolean isTD() {
+        return type != null && type.contains("TD");
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
 }
