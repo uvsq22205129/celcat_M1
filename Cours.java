@@ -5,6 +5,7 @@ public class Cours {
     private String location;
     private String description;
     private String type;
+    private String group;
 
     /**
      * 
@@ -15,13 +16,14 @@ public class Cours {
      * @param description         group associated with the course
      * @param type          type of the course{[TD, TP, CM]}
      */
-    public Cours(String title, String startTime, String endTime, String location, String description, String type) {
+    public Cours(String title, String startTime, String endTime, String location, String description, String type, String group) {
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.description = description;
         this.type = type;
+        this.group = group;
     }
     public String getTitle() {
         return title;
@@ -63,6 +65,7 @@ public class Cours {
                 ", endTime='" + endTime + '\'' +
                 ", location='" + location + '\'' +
                 ", type='" + type + '\'' +
+                ", group='" + group + '\'' +
                 '}';    
     }
 }

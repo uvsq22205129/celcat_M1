@@ -33,7 +33,7 @@ class Calandar{
     }
 
     /**
-     * Recupere les information de tous les cours dans la liste des groupe
+     * Recupere les informations de tous les cours dans la liste des groupes
      * @return list of cours
      * @throws Exception
      */
@@ -43,7 +43,8 @@ class Calandar{
         for (Group group : this.groups){
             String jsonData = celcatToJson.getCalendarData(this.startDate, this.endDate, "103", group.getGroupNumber(), "3");
             JsonToCours jsonToCours = new JsonToCours(jsonData);
-            coursList.addAll(jsonToCours.getCoursList().stream().filter(e -> e.getTitle().contains(group.getUECode())).toList());
+            coursList.addAll(jsonToCours.getCoursList()); // sans filtre des ues mettre en commentaire pour remettre le filtre de en bas
+            //coursList.addAll(jsonToCours.getCoursList().stream().filter(e -> e.getTitle().contains(group.getUECode())).toList()); // avec filtre des ues
         }
         return coursList;
     }
