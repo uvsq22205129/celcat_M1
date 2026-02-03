@@ -44,6 +44,16 @@ class ListGroup{
         return rep;
     }
 
+    toListGroup(){
+        let rep = [];
+        this.groups.entries().forEach(l_groups =>{
+            l_groups[1].entries().forEach(UE =>{
+                rep.push(new group(UE[1],l_groups[0]));
+            });
+        });
+        return rep;
+    }
+
     getUeFromGroupCode(groupCode){
         return this.groups.get(groupCode);
     }

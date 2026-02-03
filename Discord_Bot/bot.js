@@ -1,9 +1,10 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags,Events} = require('discord.js');
 const edtParsing = require('./edtParsing');
 const ListGroup = require('./listGroup');
 const group = require('./group');
 const fs = require('fs');
 const console = require('console');
+const InteractePars = require('./interaction');
 
 class Bot{
     constructor(token){
@@ -20,22 +21,19 @@ class Bot{
     }
     run(){
         this.client.once('clientReady', () => {
-        this.ready();        
+        this.ready(this.client);                
         });
 
-        this.client.on('messageCreate', message => {
+        this.client.on(Events.MessageCreate, async message => {
         if (message.author.bot) return;
-        if (message.channel.name === 'edt') {
+        if (message.channel.name === 'edt-beta') {
             if (message.content.toLowerCase().includes('hello')) {
-                message.reply('Hello there! 😊');
+                await message.reply('Hello there! 😊');
             }
-            if (!this.listAuthors.has(message.author.tag)){
-                this.listAuthors.set(message.author.tag, new ListGroup());
-            }
-            edtParsing.parseEdt(message.content, message.author.tag, message);
-        }
-        else if (message.channel.name === 'debug'){
-            this.debug(message);
+            // if (!this.listAuthors.has(message.author.id)){
+            //     this.listAuthors.set(message.author.id, new ListGroup());
+            // }
+            edtParsing.parseEdt(message.content, message.author.id, message);
         }
         else if (message.guild === null) {
             // message.reply('Mdr tu m\'as DM moi ! 😂\ntu m\'aime c\'est ca');
@@ -43,36 +41,36 @@ class Bot{
             console.log("MP received");
         }
         console.log(`Message from ${message.author.tag}: ${message.content}`);
-    });
+        });
+
+        //pour utiliser les commande slash
+        this.client.on(Events.InteractionCreate, async (interaction) =>{
+            console.log(interaction.user.tag);
+            const inter_parse = new InteractePars(interaction);
+            await inter_parse.parse();
+        });
 
         this.client.login(this.token);
     }
     
-    ready(){
+    async ready(client){
         console.log(`Bot ${this.client.user.tag} is online!`);
         // Récupérer le salon "général" (remplace "général" par le nom de ton salon)
-        const channel = this.client.channels.cache.find(ch => ch.name === 'edt');
-            
+        const channel = this.client.channels.cache.find(ch => ch.name === 'edt-beta');
         // Vérifier si le salon existe et si le bot a la permission d'y écrire
           if (channel && channel.isTextBased()) {
             console.log("Bot connected to ",channel.recipients);    
           } else {
-            console.error("Salon 'edt' introuvable ou inaccessible.");
+            console.error("Salon 'edt-beta' introuvable ou inaccessible.");
           }
-    }
-    debug(message){
-        console.log("Debug message received:", message.content);
-        if (message.content.toLowerCase().includes('view listauthors')){
-            let rep = '';
-            fs.readFileSync(`src/${message.author.tag}.edt`, 'utf-8').split('\n').forEach(line => {
-                if (line.trim() !== '') {
-                    rep += `- ${line}\n`;
-                }
-            });
-            message.channel.send(`List of authors and their groups:\n${rep}`);
-        }
-    }
+        const commands = [
+            new SlashCommandBuilder()
+            .setName('menu')
+            .setDescription('donne le menu d\'initialisation pour l\'edt'),
+        ];
 
+        await client.application.commands.set(commands);
+    }
 }
 
 module.exports = Bot;

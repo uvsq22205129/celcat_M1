@@ -22,7 +22,7 @@ class jsonToCours {
         const startTime = this.parseVal('start').toString();
         const endTime = this.parseVal('end').toString();
         const location = this.parseVal('sites');
-        const description = this.parseVal('description').split('-')[0];
+        const description = this.parseVal('description').split('-')[0].trim();
         const salle = description.slice(description.lastIndexOf('\n') + 1);
         const type = this.parseVal('eventCategory');
         const cours = new Cours(title, startTime, endTime, location, salle, type);
